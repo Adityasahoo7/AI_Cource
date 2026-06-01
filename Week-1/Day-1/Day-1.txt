@@ -1,0 +1,265 @@
+Day-1 Agenda
+
+Module 1 - AI Foundations
+What is Intelligence?
+What is Artificial Intelligence?
+Why AI was created?
+History of AI
+Types of AI
+Narrow AI
+General AI
+Super AI
+Real-world AI Applications
+AI vs Traditional Programming
+Common AI Terminologies
+AI Myths and Reality
+Interview Questions
+##################################################Day-1####################################################
+1. What is Intelligence?
+
+Human intelligence is the ability to:
+Learn
+Reason
+Solve problems
+Make decisions
+Understand language
+Recognize patterns
+Adapt to new situations
+Example:
+
+Suppose a child touches a hot stove.
+
+What happens?
+
+Touch Stove
+     ↓
+Gets Burned
+     ↓
+Learns Lesson
+     ↓
+Avoids Stove Next Time
+
+"This ability to learn from experience is intelligence."
+
+2. What is Artificial Intelligence?
+
+Artificial Intelligence means:
+Creating machines that can perform tasks that normally require human intelligence.
+AI is:
+Ability to Think
+Reason
+Learn
+Decide
+Formal Definition - "AI is a branch of computer science that enables machines to simulate human intelligence."
+Examples
+
+Example 1: Google Maps
+When Maps suggests:
+Fastest Route
+AI is analyzing:
+Traffic
+Distance
+Historical Data
+and making a decision.
+
+Example 2: Netflix
+When Netflix recommends movies:
+You may also like...
+That's AI.
+
+3. Why Was AI Created?
+Let's understand the problem.
+Imagine you write:
+if(age >= 18)
+{
+   return "Adult";
+}
+else
+{
+   return "Minor";
+}
+
+This works because rules are simple.
+Now imagine:
+Is this email spam?
+Can you write:
+if(...)
+for every spam email?
+No.
+Because patterns constantly change.
+Humans learn patterns.
+Traditional programs follow rules.
+AI was created so machines could learn patterns.
+
+Traditional Programming vs AI
+As a .NET developer, this is extremely important.
+Traditional Programming
+You provide:
+Data + Rules = Output
+
+Example:
+int result = 5 + 5;
+Rules are predefined.
+AI Programming
+You provide:
+Data + Output = Rules Learned Automatically
+
+Example:
+Thousands of emails.
+Spam
+Not Spam
+Spam
+Spam
+Not Spam
+
+Traditional Programming
+Rules + Data ->Output
+AI
+Data + Outpu -> Learn Rules
+
+4. History of AI
+1950
+Alan Turing
+Alan Turing asked:
+Can machines think?
+This led to the famous:
+Turing Test
+If a human cannot distinguish a machine from a human during conversation:
+Machine is considered intelligent.
+1956
+The term Artificial Intelligence was officially introduced at the Dartmouth Workshop.
+This is considered the birth of AI.
+1980s
+Expert Systems became popular.
+Example:
+Medical diagnosis systems.
+These systems used fixed rules.
+2012
+Deep Learning revolution.
+Neural networks became powerful due to:
+Better GPUs
+More data
+2022
+ChatGPT changed everything.
+People realized:
+AI can talk naturally
+and AI entered mainstream software development.
+
+5. Types of AI
+This is a very common interview topic.
+Type 1: Narrow AI (ANI)
+Type 2: General AI (AGI)
+Type 3: Super AI (ASI)
+
+->ANI = Artificial Narrow Intelligence
+Designed for one specific task.
+Examples:
+Siri
+Alexa
+Google Maps
+Netflix Recommendations
+ChatGPT
+Important:
+
+ChatGPT is NOT General AI.
+It is still Narrow AI.
+Example
+Chess AI can defeat world champions.
+But ask it:
+What's the weather?
+It cannot answer.
+Because it only knows chess.
+
+-> AGI = Artificial General Intelligence
+Human-level intelligence.
+Can learn anything.
+Can switch domains.
+Example:
+Math
+Programming
+Medicine
+Physics
+Business
+like a human.
+Current Status:
+AGI does not exist yet.
+
+
+ASI -> Artificial Super Intelligence
+This would be smarter than humans in every field.
+Examples:
+Science
+Programming
+Medicine
+Creativity
+Research
+Current Status:
+Purely theoretical.
+Does not exist.
+
+Quick Comparison
+Type	Exists?	Example
+Narrow AI	Yes	ChatGPT
+General AI	No	Human-level AI
+Super AI	No	Beyond Human Intelligence
+6. Real World AI Applications
+
+As a .NET developer, these are the domains where you'll build AI systems.
+
+AI helps:Healthcare
+Detect diseases
+Analyze scans
+Predict risks
+AI helps:Finance
+Fraud Detection
+Loan Approval
+Risk Analysis
+AI helps:E-commerce
+Product Recommendations
+Search
+Customer Support
+HR Systems
+
+AI can:Relevant for enterprise .NET applications.
+Analyze resumes
+Match candidates
+Generate interview questions
+Customer Support
+
+AI Chatbots:
+
+Customer
+ ↓
+AI Assistant
+ ↓
+Answer
+
+8. Important Terms
+->Model-The trained AI system.
+Example:
+GPT-4
+Gemini
+Claude
+
+->Training-Teaching AI using data.
+->Dataset-Collection of data used for training.
+          Example:Millions of books.
+->Inference-Using the trained model.
+
+When you ask ChatGPT a question:
+
+Try answering these yourself before Day 2.
+
+Q1-What is Artificial Intelligence?
+
+Q2-Difference between Traditional Programming and AI?
+
+Q3-Why was AI created?
+
+Q4-What are the three types of AI?
+
+Q5-Is ChatGPT AGI?
+
+Q6-What is the Turing Test?
+
+Q7-Give three real-world applications of AI.
