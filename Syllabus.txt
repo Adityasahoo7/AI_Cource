@@ -1,7 +1,7 @@
 AI + LLM + .NET Complete Roadmap (12 Weeks)
 
 Goal:
-By the end you should be able to explain AI concepts in interviews and build:
+By the end you should be able to build and deep learn and get deep knowledge about Ai,Ml,LLM ,RAG etc:
 
 AI Chatbots
 RAG Applications
@@ -522,30 +522,3 @@ AI HR Assistant
 Project 6
 
 MCP-based AI Assistant
-
-Interview Preparation Topics (Must Master)
-
-Before applying for AI-focused .NET roles, be able to answer:
-
-What is AI?
-What is ML?
-What is Deep Learning?
-What is Generative AI?
-What is an LLM?
-What are Tokens?
-What are Embeddings?
-What is a Vector Database?
-What is Cosine Similarity?
-What is RAG?
-What is Chunking?
-What is Function Calling?
-What is Semantic Kernel?
-What are AI Agents?
-What is MCP?
-How does ChatGPT work internally?
-How would you build an enterprise chatbot?
-How would you secure an AI application?
-How would you reduce token cost?
-How would you design a RAG system?
-
-This syllabus takes you from "I only know .NET and Angular" to "I can design and build enterprise AI applications and discuss the architecture confidently in interviews."
