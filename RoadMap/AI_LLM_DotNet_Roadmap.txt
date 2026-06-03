@@ -1,0 +1,226 @@
+
+AI + LLM + .NET ROADMAP (16 WEEKS)
+Goal: Become capable of building AI Chatbots, RAG Applications, AI Agents, MCP Integrations, and Enterprise AI Applications using .NET.
+
+==============================
+WEEK 1 - AI FOUNDATIONS
+==============================
+Day 1: Introduction to AI
+- What is AI?
+- History of AI
+- Types of AI
+- Narrow AI, General AI, Super AI
+- Real-world AI applications
+
+Day 2: Machine Learning Fundamentals
+- What is ML?
+- Traditional Programming vs ML
+- Training Data
+- Features, Labels, Models
+
+Day 3: Machine Learning Types
+- Supervised Learning
+- Unsupervised Learning
+- Reinforcement Learning
+- Use Cases
+
+Day 4: Deep Learning Basics
+- Neural Networks
+- Neurons
+- Layers
+- Activation Functions
+
+Day 5: Generative AI
+- Text Generation
+- Image Generation
+- Audio Generation
+- ChatGPT, Gemini, Claude
+
+Day 6: AI Terminologies
+- Parameters
+- Weights
+- Training
+- Inference
+- Fine-Tuning
+- Dataset
+
+Day 7: Revision + Notes + Interview Questions
+
+==============================
+WEEK 2 - LLM FUNDAMENTALS
+==============================
+Day 8: Introduction to LLMs
+Day 9: Transformer Architecture
+Day 10: Tokens & Context Window
+Day 11: Embeddings
+Day 12: Vector Mathematics & Cosine Similarity
+Day 13: How ChatGPT Works
+Day 14: Revision
+
+==============================
+WEEK 3 - PROMPT ENGINEERING
+==============================
+Day 15: Prompt Engineering Basics
+Day 16: System Prompts
+Day 17: Zero-Shot Prompting
+Day 18: One-Shot Prompting
+Day 19: Few-Shot Prompting
+Day 20: Chain-of-Thought Prompting
+Day 21: Practice & Mini Exercises
+
+==============================
+WEEK 4 - LLM APIs WITH .NET
+==============================
+Day 22: OpenAI & Gemini APIs
+Day 23: First LLM Call using HttpClient
+Day 24: Chat Completion APIs
+Day 25: Temperature & Model Parameters
+Day 26: Structured JSON Outputs
+Day 27: Function Calling
+Day 28: Project - AI Chatbot
+
+==============================
+WEEK 5 - EMBEDDINGS & VECTOR DATABASES
+==============================
+Day 29: Embeddings Deep Dive
+Day 30: Text-to-Vector Conversion
+Day 31: Similarity Search
+Day 32: Vector Databases (Pinecone, Qdrant, Weaviate)
+Day 33: Store Embeddings
+Day 34: Retrieve Embeddings
+Day 35: Project - Semantic Search Engine
+
+==============================
+WEEK 6 & 7 - RAG
+==============================
+Day 36: What is RAG?
+Day 37: Why RAG?
+Day 38: Chunking Strategies
+Day 39: Embedding Pipeline
+Day 40: Retrieval Pipeline
+Day 41: Generation Pipeline
+Day 42: End-to-End RAG Flow
+Day 43: PDF Processing
+Day 44: Document Ingestion
+Day 45: Hybrid Search
+Day 46: Re-ranking
+Day 47: Evaluation
+Day 48: RAG Interview Questions
+Day 49: Project - Company Policy Chatbot
+
+==============================
+WEEK 8 - SEMANTIC KERNEL
+==============================
+Day 50: Introduction to Semantic Kernel
+Day 51: Kernel Setup
+Day 52: Prompts
+Day 53: Plugins
+Day 54: Memory
+Day 55: Function Calling
+Day 56: Project - AI Assistant
+
+==============================
+WEEK 9 - AI AGENTS
+==============================
+Day 57: What is an AI Agent?
+Day 58: Agent Architecture
+Day 59: Planning
+Day 60: Tools
+Day 61: Memory
+Day 62: Multi-Agent Systems
+Day 63: Project - Meeting Scheduler Agent
+
+==============================
+WEEK 10 - MCP
+==============================
+Day 64: Introduction to MCP
+Day 65: MCP Architecture
+Day 66: MCP Server
+Day 67: MCP Client
+Day 68: GitHub MCP
+Day 69: Database MCP
+Day 70: Project - .NET MCP Server
+
+==============================
+WEEK 11 - AI SYSTEM DESIGN
+==============================
+Day 71: AI Application Architecture
+Day 72: Chatbot Design
+Day 73: RAG Design
+Day 74: Agent Design
+Day 75: Scaling AI Applications
+Day 76: Cost Optimization
+Day 77: Security & Governance
+
+==============================
+WEEK 12 - ENTERPRISE AI
+==============================
+Day 78: AI in HRMS
+Day 79: AI in CRM
+Day 80: AI in Healthcare
+Day 81: AI in Finance
+Day 82: AI Monitoring
+Day 83: Observability
+Day 84: Production Deployment
+
+==============================
+WEEK 13 - OPEN SOURCE LLMs
+==============================
+Day 85: Hugging Face Introduction
+Day 86: Llama Models
+Day 87: Mistral Models
+Day 88: Gemma Models
+Day 89: Qwen Models
+Day 90: Model Selection Strategies
+Day 91: Revision
+
+==============================
+WEEK 14 - LOCAL AI
+==============================
+Day 92: Ollama Setup
+Day 93: Running Local Models
+Day 94: Local Embeddings
+Day 95: Local RAG
+Day 96: Model Quantization
+Day 97: Local AI Projects
+Day 98: Revision
+
+==============================
+WEEK 15 - FINE TUNING
+==============================
+Day 99: Fine-Tuning Concepts
+Day 100: LoRA
+Day 101: QLoRA
+Day 102: PEFT
+Day 103: Training Datasets
+Day 104: Evaluation
+Day 105: Mini Project
+
+==============================
+WEEK 16 - PRODUCTION AI
+==============================
+Day 106: Docker for AI Apps
+Day 107: Azure OpenAI
+Day 108: AI Monitoring
+Day 109: RAG Evaluation
+Day 110: DeepEval & Ragas
+Day 111: Cost Optimization
+Day 112: Capstone Project Deployment
+
+==============================
+FINAL PROJECTS
+==============================
+1. AI Resume Analyzer
+2. AI Interview Question Generator
+3. AI Document Search System
+4. Enterprise RAG Application
+5. AI HR Assistant
+6. MCP-Based AI Assistant
+7. Local LLM Chatbot
+8. Multi-Agent System
+
+Daily Routine Recommendation:
+- 1 Hour Theory
+- 2 Hours Coding
+- 30 Minutes Notes
+- Weekend Revision & Project Work
