@@ -1,0 +1,315 @@
+
+DAY 2 - MACHINE LEARNING FUNDAMENTALS
+=====================================
+
+OBJECTIVE
+---------
+Understand:
+1. What Machine Learning is
+2. Why Machine Learning exists
+3. Traditional Programming vs Machine Learning
+4. Data, Features, Labels and Models
+5. Training and Prediction
+6. Real-world Machine Learning Applications
+
+--------------------------------------------------
+1. WHAT IS MACHINE LEARNING?
+--------------------------------------------------
+
+Machine Learning (ML) is a subset of Artificial Intelligence (AI)
+that enables computers to learn patterns from data and make
+predictions without being explicitly programmed.
+
+Traditional Software:
+Data + Rules = Output
+
+Machine Learning:
+Data + Output = Model (Learns Rules)
+
+--------------------------------------------------
+2. WHY MACHINE LEARNING EXISTS
+--------------------------------------------------
+
+Some problems are too complex for manually written rules.
+
+Examples:
+- Face Recognition
+- Fraud Detection
+- Recommendation Systems
+- Speech Recognition
+- Chatbots
+
+Instead of writing thousands of rules, we allow the model to
+learn patterns from historical data.
+
+--------------------------------------------------
+3. TRADITIONAL PROGRAMMING VS MACHINE LEARNING
+--------------------------------------------------
+
+Traditional Programming:
+
+Input Data
++
+Rules Written By Developer
+=
+Output
+
+Example:
+Age >= 18 => Eligible
+
+Machine Learning:
+
+Historical Data
++
+Correct Answers
+=
+Model
+
+New Data
++
+Model
+=
+Prediction
+
+--------------------------------------------------
+4. CORE COMPONENTS OF MACHINE LEARNING
+--------------------------------------------------
+
+A. DATA
+-------
+Data is the fuel of Machine Learning.
+
+Examples:
+- Employee Records
+- Customer Transactions
+- Email Messages
+- Medical Records
+
+Without data there is no learning.
+
+--------------------------------------------------
+
+B. FEATURES
+-----------
+Features are input variables used for prediction.
+
+Examples:
+
+Salary Prediction:
+- Experience
+- Education
+- Skills
+- Location
+
+Resume Screening:
+- Experience
+- Skills
+- Degree
+
+Features = Inputs
+
+--------------------------------------------------
+
+C. LABEL
+---------
+Label is the expected output.
+
+Examples:
+
+Salary Prediction:
+Label = Salary
+
+Spam Detection:
+Label = Spam / Not Spam
+
+Resume Screening:
+Label = Selected / Rejected
+
+Label = Target Variable
+
+--------------------------------------------------
+
+D. MODEL
+---------
+A Model is the knowledge learned from training data.
+
+Process:
+
+Data
+ ↓
+Training
+ ↓
+Model
+ ↓
+Prediction
+
+The model stores learned patterns.
+
+--------------------------------------------------
+5. TRAINING
+--------------------------------------------------
+
+Training is the process of teaching a model using historical data.
+
+Example:
+
+Experience | Salary
+--------------------
+1 Year     | 300000
+3 Years    | 500000
+5 Years    | 800000
+
+The model learns relationships between experience and salary.
+
+Result:
+A trained model capable of making predictions.
+
+--------------------------------------------------
+6. PREDICTION
+--------------------------------------------------
+
+After training:
+
+New Input Data
+ ↓
+Model
+ ↓
+Prediction
+
+Example:
+
+Experience = 6 Years
+Skills = .NET + Angular
+
+Prediction:
+Salary ≈ Expected Value
+
+--------------------------------------------------
+7. REAL-WORLD EXAMPLES
+--------------------------------------------------
+
+Netflix:
+Features:
+- Watch History
+- Ratings
+- Search History
+
+Label:
+- Movies Watched
+
+Outcome:
+Movie Recommendations
+
+--------------------------------------------------
+
+Banking:
+Features:
+- Transaction Amount
+- Location
+- Time
+
+Label:
+- Fraud / Genuine
+
+Outcome:
+Fraud Detection
+
+--------------------------------------------------
+
+HRMS:
+Features:
+- Skills
+- Experience
+- Education
+
+Label:
+- Selected / Rejected
+
+Outcome:
+Resume Screening
+
+--------------------------------------------------
+8. AI VS ML VS DEEP LEARNING
+--------------------------------------------------
+
+Artificial Intelligence (AI)
+    |
+    +-- Machine Learning (ML)
+            |
+            +-- Deep Learning (DL)
+
+AI:
+Machines performing intelligent tasks.
+
+ML:
+Machines learning from data.
+
+DL:
+Advanced ML using Neural Networks.
+
+--------------------------------------------------
+9. IMPORTANT INTERVIEW QUESTIONS
+--------------------------------------------------
+
+Q1. What is Machine Learning?
+Machine Learning is a subset of AI that enables systems to learn
+patterns from data and make predictions without explicit programming.
+
+Q2. Why is ML required?
+Because many real-world problems are too complex for manually written rules.
+
+Q3. What are Features?
+Input variables used by a model.
+
+Q4. What is a Label?
+Expected output used during training.
+
+Q5. What is a Model?
+A trained system that learns patterns and makes predictions.
+
+--------------------------------------------------
+10. .NET DEVELOPER PERSPECTIVE
+--------------------------------------------------
+
+Potential AI Features You Can Add:
+
+Employee Management System:
+- Resume Screening
+- Attrition Prediction
+- Salary Prediction
+
+CRM:
+- Lead Scoring
+- Customer Sentiment Analysis
+
+Support Portal:
+- AI Chatbot
+- Ticket Classification
+
+--------------------------------------------------
+DAY 2 ASSIGNMENT
+--------------------------------------------------
+
+Task 1:
+Identify Features and Labels for:
+
+1. Salary Prediction
+2. Movie Recommendation
+3. Fraud Detection
+4. Resume Screening
+5. House Price Prediction
+
+Task 2:
+Think of 3 AI use cases for your current .NET projects.
+
+--------------------------------------------------
+KEY TAKEAWAYS
+--------------------------------------------------
+
+1. ML is a subset of AI.
+2. ML learns from data.
+3. Features are inputs.
+4. Labels are outputs.
+5. Training creates a model.
+6. Prediction uses the trained model.
+7. Most modern AI systems rely on Machine Learning.
