@@ -1,0 +1,220 @@
+DAY 03 - MACHINE LEARNING TYPES
+
+Learning Objective
+- Understand Supervised Learning
+- Understand Unsupervised Learning
+- Understand Reinforcement Learning
+- Learn Classification and Regression
+- Understand ChatGPT and RAG connections
+- Prepare for interviews and projects
+
+=================================================
+1. OVERVIEW OF MACHINE LEARNING TYPES
+=================================================
+
+Machine Learning
+├── Supervised Learning
+├── Unsupervised Learning
+└── Reinforcement Learning
+
+These are three different ways machines learn from data.
+
+=================================================
+2. SUPERVISED LEARNING
+=================================================
+
+Definition:
+Supervised Learning is a machine learning technique where the model learns from labeled data.
+
+Labeled Data:
+Input + Correct Output
+
+Example:
+
+Experience | Salary
+1 Year     | 300000
+2 Years    | 450000
+5 Years    | 800000
+
+The model learns the relationship between experience and salary.
+
+Why called Supervised?
+Because correct answers are provided during training.
+
+Real World Examples:
+- Spam Detection
+- Resume Screening
+- Salary Prediction
+- Credit Approval
+- Disease Prediction
+
+=================================================
+3. TYPES OF SUPERVISED LEARNING
+=================================================
+
+A. Classification
+
+Definition:
+Predicts categories.
+
+Examples:
+- Spam / Not Spam
+- Selected / Rejected
+- Fraud / Genuine
+
+Resume Screening Example:
+Features:
+- Skills
+- Experience
+- Education
+
+Label:
+- Selected
+- Rejected
+
+B. Regression
+
+Definition:
+Predicts numerical values.
+
+Examples:
+- Salary Prediction
+- House Price Prediction
+- Sales Forecasting
+
+Output:
+Continuous numbers.
+
+=================================================
+4. UNSUPERVISED LEARNING
+=================================================
+
+Definition:
+A machine learning technique where models learn from unlabeled data.
+
+No correct answers are provided.
+
+Goal:
+Find hidden patterns.
+
+Example:
+Customer Segmentation
+
+The system automatically groups customers into similar categories.
+
+Most Common Technique:
+Clustering
+
+Enterprise Uses:
+- Customer Segmentation
+- Recommendation Systems
+- Pattern Discovery
+- Marketing Analysis
+
+=================================================
+5. REINFORCEMENT LEARNING
+=================================================
+
+Definition:
+A machine learning technique where an agent learns using rewards and penalties.
+
+Core Components:
+- Agent
+- Environment
+- Action
+- Reward
+- Penalty
+
+Examples:
+- Self Driving Cars
+- Robotics
+- Chess AI
+- Game AI
+
+Learning Method:
+Trial and Error
+
+=================================================
+6. CHATGPT CONNECTION
+=================================================
+
+ChatGPT uses:
+
+1. Supervised Learning
+2. Reinforcement Learning from Human Feedback (RLHF)
+
+Humans rate answers.
+
+Good Answer:
+Reward
+
+Bad Answer:
+Penalty
+
+This improves response quality.
+
+=================================================
+7. RAG CONNECTION
+=================================================
+
+RAG mainly relies on:
+
+- Embeddings
+- Similarity Search
+- Vector Matching
+
+These concepts are closely related to unsupervised learning.
+
+=================================================
+8. COMPARISON TABLE
+=================================================
+
+Supervised Learning
+Data: Labeled
+Goal: Predict Output
+
+Unsupervised Learning
+Data: Unlabeled
+Goal: Find Patterns
+
+Reinforcement Learning
+Data: Rewards and Penalties
+Goal: Learn Best Actions
+
+=================================================
+9. INTERVIEW QUESTIONS
+=================================================
+
+Q1. What is Supervised Learning?
+Q2. What is Unsupervised Learning?
+Q3. What is Reinforcement Learning?
+Q4. Difference between Classification and Regression?
+Q5. Which ML types are used in ChatGPT?
+
+=================================================
+10. .NET DEVELOPER PERSPECTIVE
+=================================================
+
+Employee Management System:
+
+Resume Screening -> Classification
+
+Salary Prediction -> Regression
+
+Employee Segmentation -> Clustering
+
+Attrition Prediction -> Classification
+
+=================================================
+KEY TAKEAWAYS
+=================================================
+
+1. ML has three major categories.
+2. Supervised Learning uses labeled data.
+3. Classification predicts categories.
+4. Regression predicts numerical values.
+5. Unsupervised Learning finds patterns.
+6. Clustering is a common unsupervised technique.
+7. Reinforcement Learning learns using rewards.
+8. ChatGPT uses Supervised Learning and RLHF.
+9. RAG uses embeddings and similarity search.
