@@ -1,0 +1,495 @@
+
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║              AI COURSE — DAY 6: AI TERMINOLOGIES                               ║
+║              Parameters | Weights | Training | Inference | Fine-Tuning | Dataset║
+║              Author: [Your Name]  |  Date: 2026-06-09                           ║
+║              Perspective: .NET Developer  |  Ready for GitHub Commit            ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 1 — PARAMETERS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  DEFINITION:
+    Parameters are ALL the learnable values inside a neural network —
+    every weight and every bias across every layer.
+    They are the numbers the model adjusts during training to get smarter.
+
+  FORMULA:
+    Parameters = Weights + Biases  (across all layers)
+
+  WHY "LARGE" MODELS ARE LARGE:
+    GPT-2:    117 million parameters    (2019)
+    GPT-3:    175 billion parameters    (2020)
+    GPT-4:    ~1.8 trillion parameters  (estimated, 2023)
+    
+    More parameters = more capacity to store knowledge and learn patterns.
+    But also = more memory, more compute, more cost to run.
+
+  REAL-WORLD ANALOGY:
+    Parameters are like all the knobs and dials on a recording studio mixer.
+    Training turns thousands of dials until the output sounds perfect.
+
+  .NET DEVELOPER ANALOGY:
+    Parameters are like every configurable field in your appsettings.json —
+    but instead of you setting them manually, the AI learns the best values
+    automatically through training.
+
+  KEY FACT:
+    When someone says "GPT-4 has 1 trillion parameters", they mean the model
+    has 1 trillion individual numbers it learned to make good predictions.
+    You never set these — the training process discovers them.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 2 — WEIGHTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  DEFINITION:
+    Weights are the most important type of parameter. They sit on every
+    connection between neurons and control how much influence one neuron
+    has on the next. Biases are the other type (a fixed offset per neuron).
+
+  HOW WEIGHTS WORK:
+    Neuron output  =  Activation( Σ(input × weight) + bias )
+
+    High weight  → that input strongly influences the output
+    Near-zero weight → that input is almost ignored
+    Negative weight  → that input suppresses the output
+
+  WEIGHT UPDATE (How Learning Happens):
+    new_weight = old_weight − (learning_rate × gradient)
+
+    The gradient tells us: "which direction should this weight move to
+    reduce the model's error?" This update runs millions of times across
+    the entire dataset during training.
+
+  REAL-WORLD ANALOGY:
+    Imagine deciding whether to buy a product. You weigh factors:
+    Price (weight: 0.7), Reviews (weight: 0.9), Brand (weight: 0.3)
+    High-weight factors influence your decision more — just like neurons.
+
+  .NET EXAMPLE:
+    // Conceptual weight update in C#
+    double learningRate = 0.01;
+    double gradient = ComputeGradient(prediction, actual);
+    weight = weight - (learningRate * gradient);
+
+  RELATIONSHIP: Parameters vs Weights
+    ┌─────────────────────────────────────────┐
+    │  PARAMETERS                             │
+    │  ┌─────────────┐   ┌─────────────────┐ │
+    │  │   WEIGHTS   │ + │     BIASES      │ │
+    │  │ (connections)│   │ (per neuron)    │ │
+    │  └─────────────┘   └─────────────────┘ │
+    └─────────────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 3 — TRAINING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  DEFINITION:
+    Training is the process of feeding data into a neural network and
+    automatically adjusting its weights to minimize prediction errors.
+    It is how the model "learns" from examples.
+
+  THE TRAINING LOOP (Step by Step):
+
+    STEP 1 — FORWARD PASS:
+      Input data flows through the network layer by layer.
+      The model makes a prediction (output).
+
+    STEP 2 — CALCULATE LOSS:
+      Loss Function measures how wrong the prediction is.
+      Example: Predicted price = ₹9,00,000 | Actual = ₹10,00,000
+      Loss (MSE) = (9,00,000 − 10,00,000)² = a large number
+
+    STEP 3 — BACKWARD PASS (Backpropagation):
+      The error is propagated backwards through the network.
+      Calculus (chain rule) computes the gradient of the loss
+      with respect to every weight: "how much did each weight
+      contribute to this error?"
+
+    STEP 4 — WEIGHT UPDATE (Gradient Descent):
+      Every weight is nudged slightly in the direction that
+      reduces the loss. Learning rate controls the step size.
+
+    STEP 5 — REPEAT:
+      Run this loop over the full dataset, many times (epochs),
+      until the model's loss is acceptably low.
+
+  VISUAL:
+    Data In → [Forward Pass] → Prediction
+                                    ↓
+                              Loss Function
+                                    ↓
+    Weights Updated ← [Backward Pass / Gradient Descent]
+
+  KEY HYPERPARAMETERS:
+    Learning Rate:  How big each weight update step is (e.g. 0.001)
+                    Too high → overshoots, unstable training
+                    Too low  → slow training, stuck in local minima
+    Batch Size:     How many samples processed before updating weights
+    Epochs:         How many full passes through the training data
+
+  COMMON LOSS FUNCTIONS:
+    MSE  (Mean Squared Error)     → Regression problems (predicting numbers)
+    Cross-Entropy                 → Classification problems (predicting categories)
+    Binary Cross-Entropy          → Binary classification (yes/no outputs)
+
+  REAL-WORLD EXAMPLE:
+    Training a fraud detection model for a bank:
+    Dataset: 10 million transactions (label: fraud / not fraud)
+    Batch size: 256 | Learning rate: 0.001 | Epochs: 20
+    After training: model correctly identifies fraud 97% of the time.
+
+  .NET DEVELOPER ANALOGY:
+    Training is like a CI/CD pipeline that runs automatically:
+    Code (data) → Build (forward pass) → Test (loss) → Fix bugs (backprop)
+    → Deploy updated version (new weights) → Repeat until tests pass.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 4 — INFERENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  DEFINITION:
+    Inference is using a TRAINED model to make predictions on new, unseen data.
+    Weights are frozen — no learning happens. Just input → output.
+
+  TRAINING vs INFERENCE:
+    ┌─────────────────┬──────────────────────┬──────────────────────┐
+    │ Aspect          │ Training             │ Inference            │
+    ├─────────────────┼──────────────────────┼──────────────────────┤
+    │ Purpose         │ Learn weights        │ Use learned weights  │
+    │ Weights         │ Constantly updated   │ Frozen (read-only)   │
+    │ Data needed     │ Huge labeled dataset │ Just one new input   │
+    │ Compute cost    │ Very high (GPU days) │ Low (milliseconds)   │
+    │ When it happens │ Once (or rarely)     │ Constantly in prod   │
+    │ Backprop?       │ Yes                  │ No                   │
+    └─────────────────┴──────────────────────┴──────────────────────┘
+
+  INFERENCE PIPELINE:
+    New Input → Load Trained Model → Forward Pass Only → Output/Prediction
+
+  LATENCY MATTERS IN INFERENCE:
+    Real-time apps (chatbots, autocomplete) need fast inference.
+    Techniques to speed up inference:
+      Quantization:  Reduce weight precision (32-bit → 8-bit) → smaller, faster
+      Pruning:       Remove near-zero weights → smaller model
+      Batching:      Process multiple requests at once → GPU efficiency
+      Caching:       Cache repeated inputs (KV cache in LLMs)
+
+  REAL-WORLD EXAMPLE:
+    ChatGPT inference:
+      Your message → OpenAI's servers → model runs forward pass →
+      generates tokens one by one → streams back to your screen.
+      That entire pipeline = inference. Training already happened months ago.
+
+  .NET DEVELOPER EXAMPLE:
+    Using a trained ONNX model for inference in C#:
+
+    using var session = new InferenceSession("fraud_model.onnx");
+    var input = new DenseTensor<float>(new[] { amount, location, hour }, new[] { 1, 3 });
+    var inputs = new List<NamedOnnxValue> {
+        NamedOnnxValue.CreateFromTensor("features", input)
+    };
+    var result = session.Run(inputs);
+    float fraudProbability = result.First().AsEnumerable<float>().First();
+    // Pure inference — no training, no weight updates. Just prediction.
+
+  KEY INSIGHT:
+    When you call the OpenAI API or Azure OpenAI from your .NET app,
+    you are 100% doing INFERENCE. The model is already trained.
+    You're just getting predictions from frozen weights.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 5 — FINE-TUNING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  DEFINITION:
+    Fine-tuning is taking a pre-trained model and continuing to train it
+    on a smaller, task-specific dataset to specialize its behavior —
+    without training from scratch.
+
+  WHY FINE-TUNE INSTEAD OF TRAIN FROM SCRATCH?
+    Training GPT-4 from scratch costs ~$100 million and months of compute.
+    Fine-tuning a pre-trained model for your task costs ~$100 and hours.
+    The base model already knows language/vision — you just specialize it.
+
+  PRE-TRAINING vs FINE-TUNING:
+    Pre-Training:  Train on massive general data (internet, books, Wikipedia)
+                   Learns general language / vision understanding.
+                   Done ONCE by AI companies (OpenAI, Google, Anthropic).
+
+    Fine-Tuning:   Train the pre-trained model further on YOUR specific data.
+                   Teaches it YOUR domain, tone, format, or task.
+                   Done by developers / companies for their use case.
+
+  VISUAL:
+    [General Pre-trained Model]
+              ↓
+    + Small domain-specific dataset
+              ↓
+    [Fine-tuned Specialized Model]
+
+  REAL-WORLD FINE-TUNING EXAMPLES:
+    • GPT-4 pre-trained → Fine-tuned on medical records → Medical AI assistant
+    • GPT-4 pre-trained → Fine-tuned on legal documents → Legal contract analyzer
+    • GPT-4 pre-trained → Fine-tuned on your company's tone/style → Brand chatbot
+    • Whisper pre-trained → Fine-tuned on Indian accents → Better Hindi-English STT
+    • BERT pre-trained → Fine-tuned on customer reviews → Sentiment classifier
+
+  TYPES OF FINE-TUNING:
+    Full Fine-Tuning:    Update ALL weights. Most powerful. Most expensive.
+    LoRA:                Low-Rank Adaptation. Freeze most weights, train only
+                         small adapter matrices. 10x cheaper, nearly as good.
+    QLoRA:               Quantized LoRA. Fine-tune on consumer GPU. Very cheap.
+    PEFT:                Parameter-Efficient Fine-Tuning (umbrella term for LoRA, etc.)
+    RLHF Fine-Tuning:    Use human feedback to align model behavior (how ChatGPT works)
+
+  .NET DEVELOPER EXAMPLE:
+    Fine-tune GPT-3.5 via OpenAI API to respond in your app's style:
+
+    // Step 1: Upload your training data (JSONL format)
+    // {"messages": [{"role":"user","content":"What is your return policy?"},
+    //               {"role":"assistant","content":"Our 30-day hassle-free..."}]}
+
+    var client = new OpenAIClient(apiKey);
+    // Step 2: Create fine-tuning job
+    // POST https://api.openai.com/v1/fine_tuning/jobs
+    // { "training_file": "file-abc123", "model": "gpt-3.5-turbo" }
+
+    // Step 3: Use your fine-tuned model like any other model
+    // model: "ft:gpt-3.5-turbo:your-org:custom-name:id"
+
+  FINE-TUNING vs PROMPT ENGINEERING:
+    Prompt Engineering: Guide the model's behavior via better prompts.
+                        No training needed. Fast and free. Less consistent.
+    Fine-Tuning:        Bake behavior into the model via training.
+                        Requires data + cost. More consistent and efficient.
+    
+    Rule of thumb: Always try prompt engineering first.
+                   Fine-tune only when prompts consistently fail.
+
+  .NET ANALOGY:
+    Pre-trained model = ASP.NET Core framework (general purpose, ready to use)
+    Fine-tuned model  = Your custom app built on top (specialized for your domain)
+    You didn't rebuild the framework — you built on it.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 6 — DATASET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  DEFINITION:
+    A dataset is a structured collection of data used to train, validate,
+    or test a machine learning model. The quality and size of your dataset
+    directly determines the quality of your trained model.
+
+  "GARBAGE IN, GARBAGE OUT":
+    No matter how powerful the model architecture, bad data = bad model.
+    Dataset quality is arguably the most important factor in AI success.
+
+  THE THREE DATASET SPLITS:
+    ┌──────────────┬────────────┬──────────────────────────────────────────┐
+    │ Split        │ Typical %  │ Purpose                                  │
+    ├──────────────┼────────────┼──────────────────────────────────────────┤
+    │ Training     │ 70-80%     │ Model learns weights from this data      │
+    │ Validation   │ 10-15%     │ Tune hyperparameters, monitor overfitting│
+    │ Test         │ 10-15%     │ Final evaluation — model never saw this  │
+    └──────────────┴────────────┴──────────────────────────────────────────┘
+
+  DATASET TYPES:
+    Labeled:    Each sample has an answer tag (supervised learning)
+                Example: 10,000 emails tagged "spam" or "not spam"
+    Unlabeled:  Raw data, no tags (used in pre-training LLMs)
+                Example: All of Wikipedia, GitHub repos, web crawls
+    Synthetic:  AI-generated data used to augment real datasets
+                Example: Generate 10,000 fake transactions to balance fraud data
+
+  OVERFITTING vs UNDERFITTING:
+    Overfitting:   Model memorizes training data but fails on new data.
+                   Fix: More training data, dropout, regularization, early stopping.
+    Underfitting:  Model is too simple — can't learn even the training data.
+                   Fix: Bigger model, more training, better features.
+
+  FAMOUS DATASETS:
+    ImageNet:    14M labeled images. Benchmark for computer vision models.
+    MNIST:       70K handwritten digit images. The "Hello World" of ML.
+    Common Crawl: Petabytes of web text. Used to train GPT, LLaMA, BERT.
+    COCO:        330K images with object detection labels.
+    HuggingFace Datasets: Thousands of open-source NLP/vision datasets.
+
+  DATA QUALITY FACTORS:
+    Size:        More data generally = better model (to a point)
+    Diversity:   Data should cover all real-world scenarios
+    Balance:     Equal representation of all classes (avoid bias)
+    Accuracy:    Wrong labels = wrong model (GIGO principle)
+    Recency:     Stale data → model won't understand current language/trends
+
+  REAL-WORLD EXAMPLE:
+    You want to build a .NET API that classifies customer support tickets
+    into categories: Billing | Technical | Shipping | General.
+    
+    Dataset you need:
+      4,000 tickets labeled with correct category (1,000 per category)
+      Split: 3,200 train / 400 validation / 400 test
+      Fine-tune a BERT model → deploy via ONNX in your ASP.NET Core API.
+
+  .NET DEVELOPER EXAMPLE — Loading a CSV dataset in C#:
+    
+    using var reader = new StreamReader("tickets.csv");
+    using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+    var records = csv.GetRecords<SupportTicket>().ToList();
+    
+    // Split dataset
+    int trainSize = (int)(records.Count * 0.8);
+    var trainData = records.Take(trainSize).ToList();
+    var testData  = records.Skip(trainSize).ToList();
+    
+    // Feed into ML.NET pipeline
+    var dataView = mlContext.Data.LoadFromEnumerable(trainData);
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 7 — HOW ALL 6 TERMS CONNECT (THE BIG PICTURE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  FULL AI LIFECYCLE:
+
+  1. DATASET       → Collect and clean labeled data
+         ↓
+  2. TRAINING      → Feed dataset into model, adjust WEIGHTS via backprop
+         ↓
+  3. PARAMETERS    → The model's weights + biases are now optimized
+         ↓
+  4. INFERENCE     → Deploy model, accept new inputs, return predictions
+         ↓
+  5. FINE-TUNING   → (optional) Specialize the model on domain-specific data
+         ↓
+  6. INFERENCE     → Deploy fine-tuned model for better domain performance
+
+  ONE-LINE SUMMARY OF EACH:
+    Dataset      → The fuel (data the model learns from)
+    Training     → The engine (process of learning from data)
+    Parameters   → The result (all learned numbers in the model)
+    Weights      → The core of parameters (connection strengths)
+    Inference    → The product (using trained model to predict)
+    Fine-Tuning  → The upgrade (specializing a pre-trained model)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 8 — REVISION NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ★ PARAMETERS:  All learnable values = Weights + Biases. More = smarter model.
+  ★ WEIGHTS:     Numbers on connections between neurons. Learned via training.
+                 High weight = strong influence. Near-zero = ignored.
+  ★ TRAINING:    Forward pass → Loss → Backprop → Weight update. Repeat × epochs.
+  ★ INFERENCE:   Use frozen trained weights to predict on new data. Fast. No learning.
+  ★ FINE-TUNING: Take pre-trained model + small custom dataset = specialized model.
+                 LoRA = cheap fine-tuning. Full fine-tune = expensive but powerful.
+  ★ DATASET:     Labeled collection split into Train / Validation / Test.
+                 Quality > quantity. Garbage in = garbage out.
+
+  KEY TERMS GLOSSARY:
+    Epoch:          One full pass through the entire training dataset
+    Batch:          Subset of data processed before one weight update
+    Learning Rate:  Step size for weight updates (typically 0.001)
+    Loss Function:  Measures prediction error (MSE, Cross-Entropy)
+    Gradient:       Direction to move weights to reduce loss
+    Overfitting:    Model memorizes train data, fails on new data
+    Underfitting:   Model too simple to learn even training data
+    LoRA:           Efficient fine-tuning by training small adapter layers
+    ONNX:           Open format to run trained models in any language/.NET
+    Quantization:   Reduce model size for faster inference (32-bit → 8-bit)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 9 — INTERVIEW QUESTIONS & ANSWERS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Q1: What are parameters in a neural network?
+  A:  Parameters are all learnable values in a model — weights (on connections)
+      and biases (per neuron). When people say "GPT-3 has 175B parameters" they 
+      mean 175 billion individual numbers the model learned during training.
+
+  Q2: What is the difference between parameters and weights?
+  A:  Weights are the main type of parameter — they live on the connections between
+      neurons and control influence. Biases are the other type — a per-neuron offset.
+      Parameters = Weights + Biases. In casual usage, they're often used interchangeably.
+
+  Q3: What happens during the training process?
+  A:  Training loops over: (1) Forward pass — data flows through network to get a
+      prediction, (2) Loss calculation — how wrong was the prediction, (3) Backprop
+      — compute gradients of loss w.r.t. each weight, (4) Weight update via gradient
+      descent. This loop repeats over the full dataset for multiple epochs.
+
+  Q4: What is the difference between training and inference?
+  A:  Training learns weights from data — weights are updated, computationally
+      expensive, done once. Inference uses frozen weights to predict on new input —
+      no learning, fast, done in production constantly. Calling the ChatGPT API
+      is inference; training GPT-4 cost ~$100M and took months.
+
+  Q5: What is fine-tuning and when should you use it?
+  A:  Fine-tuning continues training a pre-trained model on a small domain-specific
+      dataset to specialize behavior. Use it when: prompt engineering is insufficient,
+      you need consistent tone/format, or you have domain knowledge not in the base
+      model. Always try prompt engineering first — fine-tune only when needed.
+
+  Q6: What is the difference between pre-training and fine-tuning?
+  A:  Pre-training trains a model from scratch on massive general data (terabytes
+      of internet text). Done once by AI companies at huge cost. Fine-tuning starts
+      from a pre-trained model and trains further on a small specialized dataset.
+      Much cheaper (~$100 vs ~$100M) and faster (hours vs months).
+
+  Q7: What is overfitting and how do you fix it?
+  A:  Overfitting is when a model performs well on training data but poorly on
+      new data — it memorized instead of generalizing. Fixes: more training data,
+      dropout (randomly deactivate neurons during training), regularization (L1/L2),
+      early stopping (stop training when validation loss increases), data augmentation.
+
+  Q8: What are the three dataset splits and why do we need all three?
+  A:  Train (70-80%): model learns weights from this. Validation (10-15%): used
+      to tune hyperparameters and detect overfitting during training — model doesn't
+      train on this. Test (10-15%): final evaluation on data model has never seen —
+      gives honest measure of real-world performance. Without all three, you can't
+      tell if your model truly learned or just memorized.
+
+  Q9: What is a learning rate and what happens if it's too high or too low?
+  A:  Learning rate is the step size for each weight update. Too high: weights
+      overshoot the optimal value — training becomes unstable or diverges. Too low:
+      training is very slow and may get stuck in a local minimum. Typical range:
+      0.0001 to 0.01. Learning rate schedulers gradually reduce it during training.
+
+  Q10: What is LoRA and why is it useful?
+  A:   LoRA (Low-Rank Adaptation) is a parameter-efficient fine-tuning technique.
+       Instead of updating all weights, it freezes the original model and trains
+       small adapter matrices injected into each layer. The result: 10-100x fewer
+       trainable parameters, drastically lower cost and memory, nearly equivalent
+       quality. Widely used to fine-tune LLMs on consumer GPUs.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 10 — KEY TAKEAWAYS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✅ Parameters = all learned numbers (weights + biases). More = more capacity.
+  ✅ Weights = connection strengths between neurons. Learned automatically.
+  ✅ Training = data + forward pass + loss + backprop + weight update × epochs.
+  ✅ Inference = frozen model + new input = fast prediction. What APIs do.
+  ✅ Fine-Tuning = pre-trained model + small dataset = specialized model cheaply.
+  ✅ Dataset = fuel for AI. Split into Train / Validation / Test always.
+  ✅ As a .NET dev: you run INFERENCE daily (APIs). ONNX Runtime brings models
+     into your C# app. Azure OpenAI + ML.NET cover 90% of your AI use cases.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  END OF DAY 6 NOTES
+  Next Up → Day 7: Prompt Engineering
+            (Zero-shot, Few-shot, Chain-of-Thought, RAG, System Prompts)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
