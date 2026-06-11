@@ -1,0 +1,567 @@
+
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║              AI COURSE — DAY 8: INTRODUCTION TO LLMs                           ║
+║              What are LLMs | How They Work | Tokens | Context | Embeddings     ║
+║              Prompts | Temperature | Limitations | Real-World Use               ║
+║              Author: [Your Name]  |  Date: 2026-06-11                           ║
+║              Perspective: .NET Developer  |  Ready for GitHub Commit            ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 1 — WHAT IS AN LLM?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  DEFINITION:
+    A Large Language Model (LLM) is a deep learning model trained on massive
+    amounts of text data to understand, generate, and reason about human language.
+
+    L = Large      → Billions to trillions of parameters
+    L = Language   → Trained specifically on text (books, web, code, etc.)
+    M = Model      → A neural network (Transformer architecture)
+
+  WHAT CAN AN LLM DO?
+    ✦ Generate text (articles, emails, stories, code)
+    ✦ Summarize long documents
+    ✦ Translate between languages
+    ✦ Answer questions from context
+    ✦ Write and explain code
+    ✦ Classify and extract information
+    ✦ Reason through multi-step problems
+    ✦ Hold multi-turn conversations
+
+  HOW IS IT DIFFERENT FROM OLDER NLP?
+    Old NLP (rule-based):   Hand-coded grammar rules. Fragile. Narrow.
+    Old ML NLP (LSTM/RNN):  Learned patterns but short memory, slow training.
+    LLMs (Transformer):     Learn from billions of examples. Long-range context.
+                            One model handles ALL language tasks. Flexible.
+
+  SIZE COMPARISON:
+    BERT (2018):     110 million parameters   — Google, understanding tasks
+    GPT-2 (2019):    1.5 billion parameters   — OpenAI, generation
+    GPT-3 (2020):    175 billion parameters   — OpenAI, breakthrough moment
+    LLaMA 3 (2024):  70 billion parameters    — Meta, open source
+    GPT-4 (2023):    ~1.8 trillion (est.)     — OpenAI, current standard
+    Claude 3 Opus:   Undisclosed (~hundreds B)— Anthropic
+
+  .NET DEVELOPER ANALOGY:
+    An LLM is like the .NET Runtime — a massive general-purpose engine
+    built once at enormous cost. You don't rebuild it; you build ON it.
+    Your app calls it via API the same way your code targets the CLR.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 2 — HOW LLMs WORK (THE CORE MECHANISM)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  THE CORE TASK — NEXT TOKEN PREDICTION:
+    An LLM is trained on one simple task:
+    "Given all previous tokens, predict the most likely NEXT token."
+
+    Input:   "The Eiffel Tower is located in"
+    Output:  "Paris"  (highest probability next token)
+
+    Everything — summarization, coding, reasoning — emerges from this
+    one task trained at massive scale. That's the magic.
+
+  THE TRANSFORMER ARCHITECTURE (Under the Hood):
+    LLMs are built on the Transformer architecture (Google, 2017).
+
+    KEY COMPONENTS:
+      Tokenizer:        Converts text → token IDs (numbers)
+      Embedding Layer:  Converts token IDs → dense vectors (meaning in math)
+      Attention Layers: Each token attends to all others — builds context
+      Feed-Forward NN:  Processes attended representations per token
+      Output Layer:     Produces probability distribution over vocabulary
+                        → pick the highest probability token → that's the output
+
+  SELF-ATTENTION (The Heart of Transformers):
+    For every token, attention asks:
+    "Which other tokens in this input are most relevant to understanding ME?"
+
+    Example:
+      "The trophy didn't fit in the bag because IT was too big."
+      What does "IT" refer to? Trophy or bag?
+      Attention computes relevance scores → "trophy" scores highest → IT = trophy.
+
+    This is why LLMs understand long-range dependencies that older models missed.
+
+  AUTOREGRESSIVE GENERATION:
+    LLMs generate one token at a time, feeding each output back as input:
+
+    "Write a haiku" →
+    "Write a haiku about" →  (model adds "about")
+    "Write a haiku about rain" → (model adds "rain")
+    ... continues until [END] token or max_tokens reached.
+
+  FULL PIPELINE:
+    User Prompt (text)
+         ↓
+    Tokenization  →  [23, 891, 14, 703, ...]
+         ↓
+    Token Embeddings  →  vectors per token
+         ↓
+    Transformer Layers (Attention + FFN) × N  →  contextual representations
+         ↓
+    Output head  →  probability over 50,000+ vocabulary tokens
+         ↓
+    Sample/Select next token  →  decode back to text
+         ↓
+    Repeat until done
+         ↓
+    Final Response (text)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 3 — TOKENS & TOKENIZATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  DEFINITION:
+    A token is the basic unit of text that an LLM processes.
+    Tokenization is the process of splitting text into tokens.
+    LLMs don't read characters or words — they read TOKENS.
+
+  WHAT IS A TOKEN?
+    Tokens are roughly: whole words, parts of words, or punctuation.
+    Rule of thumb: 1 token ≈ 0.75 words (English)
+                   100 tokens ≈ 75 words ≈ 1 short paragraph
+
+  TOKENIZATION EXAMPLES (GPT tokenizer):
+    "Hello"        → ["Hello"]                        = 1 token
+    "Hello world"  → ["Hello", " world"]              = 2 tokens
+    "Unbelievable" → ["Un", "believ", "able"]         = 3 tokens
+    "API"          → ["API"]                          = 1 token
+    "C#"           → ["C", "#"]                       = 2 tokens
+    "नमस्ते"        → 5-8 tokens (non-English = more tokens)
+
+  WHY TOKENS MATTER FOR DEVELOPERS:
+    API pricing is per token (input + output tokens).
+    Context window limits are in tokens, not words or characters.
+    
+    Practical estimates:
+      1,000 tokens   ≈ 750 words     ≈ 1.5 pages
+      32,000 tokens  ≈ 24,000 words  ≈ a short novel chapter
+      128,000 tokens ≈ 96,000 words  ≈ a full novel
+
+  TOKENIZER TYPES:
+    BPE (Byte Pair Encoding):   Used by GPT models. Merges frequent pairs.
+    WordPiece:                  Used by BERT. Similar to BPE.
+    SentencePiece:              Used by LLaMA, Gemini. Language-agnostic.
+
+  .NET DEVELOPER COST EXAMPLE:
+    OpenAI GPT-4o pricing: $2.50 per 1M input tokens
+    Your system prompt = 500 tokens
+    User message = 100 tokens
+    Response = 400 tokens
+    Per API call cost = (600 input + 400 output) × price
+    
+    At 10,000 calls/day: monitor token usage carefully!
+    
+    // Count tokens before sending (using TikToken in C#):
+    // dotnet add package TiktokenSharp
+    var tokenizer = TikToken.EncodingForModel("gpt-4o");
+    int tokenCount = tokenizer.Encode(myPrompt).Count;
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 4 — CONTEXT WINDOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  DEFINITION:
+    The context window is the maximum number of tokens an LLM can process
+    in a single request — including both the input (prompt) and output (response).
+    Everything outside this window is invisible to the model.
+
+  ANALOGY:
+    The context window is the model's "working memory" or RAM.
+    Whatever fits in the window = the model can use it.
+    Whatever is outside = the model has no idea it exists.
+
+  CONTEXT WINDOW SIZES (2025):
+    GPT-3.5:       16,384 tokens   (~12,000 words)
+    GPT-4o:       128,000 tokens   (~96,000 words)
+    Claude 3:     200,000 tokens   (~150,000 words)
+    Gemini 1.5:  1,000,000 tokens  (~750,000 words)  ← current record
+
+  WHAT FITS IN A CONTEXT WINDOW?
+    128K tokens can hold:
+      • A full novel (most novels are 70K–100K words)
+      • An entire codebase of a medium project
+      • 6+ hours of meeting transcripts
+      • Hundreds of emails in a thread
+
+  WHY CONTEXT WINDOW IS CRITICAL:
+    Too small → can't analyze long documents without chunking
+    Too large  → more expensive, slower to process
+
+  WHAT HAPPENS WHEN YOU EXCEED THE CONTEXT WINDOW?
+    Options:
+      Truncation:   Cut off older parts of the conversation
+      Chunking:     Split document into pieces, process each separately
+      Summarization: Summarize earlier context to compress it
+      RAG:          Retrieve only relevant chunks, not the whole document
+
+  .NET DEVELOPER EXAMPLE:
+    Building a customer support chatbot — managing conversation history:
+
+    // Keep only last N messages to stay within context window
+    const int MaxTokenBudget = 4000;
+    var messages = conversationHistory.TakeLast(10).ToList();
+    
+    // Always prepend system prompt
+    messages.Insert(0, new { role = "system", content = systemPrompt });
+    
+    // Call API with trimmed history
+    var response = await openAIClient.GetChatCompletionsAsync(
+        new ChatCompletionsOptions { Messages = messages, MaxTokens = 1000 });
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 5 — PROMPTS & COMPLETIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  DEFINITIONS:
+    Prompt:     The input text you send to the LLM (your question/instruction).
+    Completion: The output text the LLM generates in response.
+    Together:   One full API call = prompt in + completion out.
+
+  TYPES OF PROMPTS:
+    System Prompt:  Instructions set before the conversation. Defines the
+                    model's role, tone, format, rules. Hidden from end user.
+                    Example: "You are a helpful .NET developer assistant.
+                               Always respond with C# code examples."
+
+    User Prompt:    The actual message from the user.
+                    Example: "How do I implement JWT authentication?"
+
+    Assistant Turn: Previous model response included in history (multi-turn).
+
+  PROMPT STRUCTURE IN API CALLS:
+    [
+      { "role": "system",    "content": "You are a .NET expert..." },
+      { "role": "user",      "content": "Explain dependency injection." },
+      { "role": "assistant", "content": "Dependency injection is..." },
+      { "role": "user",      "content": "Show me a C# example." }
+    ]
+
+  PROMPTING TECHNIQUES:
+    Zero-shot:   No examples given. Just instruction.
+                 "Translate this to French: Hello"
+
+    Few-shot:    Give 2-3 examples before the actual task.
+                 "English: Hello → French: Bonjour
+                  English: Goodbye → French: Au revoir
+                  English: Thank you → French: ?"
+
+    Chain-of-Thought (CoT): Ask the model to think step by step.
+                 "Solve this step by step: If a train..."
+                 Dramatically improves reasoning and math accuracy.
+
+    Role Prompting: Assign a persona.
+                 "You are a senior .NET architect with 15 years experience..."
+
+  .NET BEST PRACTICES:
+    1. Always use a system prompt to define behavior
+    2. Be specific about output format (JSON, markdown, C# class)
+    3. Use few-shot examples for consistent structured output
+    4. Add "think step by step" for complex reasoning tasks
+    5. Keep system prompts in config/Key Vault, not hardcoded
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 6 — TEMPERATURE, TOP-P, TOP-K
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  These are sampling parameters that control HOW the model picks the next token
+  from its probability distribution. They don't change the model's knowledge —
+  only how deterministic or creative the output is.
+
+  TEMPERATURE:
+    Controls randomness of token selection.
+
+    0.0  → Always pick the highest probability token (deterministic/focused)
+    0.5  → Balanced — sensible but some variation
+    1.0  → Standard creative range
+    1.5+ → Very random, unexpected, sometimes incoherent
+
+    USE LOW (0.0-0.3) FOR:   Code, SQL, factual answers, structured JSON output
+    USE HIGH (0.7-1.0) FOR:  Creative writing, brainstorming, diverse suggestions
+
+  TOP-P (Nucleus Sampling):
+    Consider only the smallest set of tokens whose cumulative probability ≥ p.
+
+    top_p = 0.9 → Only consider tokens that make up the top 90% of probability mass
+    top_p = 1.0 → Consider all tokens (no filtering)
+
+    Practical effect: prevents picking extremely unlikely tokens.
+    Use top_p OR temperature — not both at high values simultaneously.
+
+  TOP-K:
+    Consider only the top K most probable tokens at each step.
+    top_k = 50 → Choose from the 50 most likely next tokens only.
+    Simpler than top_p. Less commonly exposed in APIs.
+
+  QUICK REFERENCE:
+    ┌─────────────────────────────┬───────────────┬──────────────────────────┐
+    │ Use Case                    │ Temperature   │ Top-p                    │
+    ├─────────────────────────────┼───────────────┼──────────────────────────┤
+    │ Code generation             │ 0.1 – 0.3     │ 0.95                     │
+    │ Factual Q&A / chatbot       │ 0.2 – 0.5     │ 0.9                      │
+    │ Email drafting              │ 0.5 – 0.7     │ 0.95                     │
+    │ Creative writing            │ 0.8 – 1.0     │ 0.95 – 1.0               │
+    │ Brainstorming               │ 0.9 – 1.2     │ 1.0                      │
+    └─────────────────────────────┴───────────────┴──────────────────────────┘
+
+  .NET EXAMPLE:
+    var options = new ChatCompletionsOptions {
+        DeploymentName = "gpt-4o",
+        Temperature = 0.2f,      // Low = consistent code output
+        NucleusSamplingFactor = 0.95f,
+        MaxTokens = 800,
+        Messages = { systemMsg, userMsg }
+    };
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 7 — EMBEDDINGS & VECTOR SEARCH
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  DEFINITION:
+    An embedding is a dense numerical vector (list of floating-point numbers)
+    that represents the MEANING of a piece of text in a high-dimensional space.
+    Similar meanings → vectors that are close together in that space.
+
+  ANALOGY:
+    Imagine plotting words on a map where meaning = geography.
+    "Cat" and "Kitten" sit close together.
+    "King" − "Man" + "Woman" ≈ "Queen" (famous Word2Vec example).
+    LLM embeddings work the same way but in 1536+ dimensions.
+
+  HOW EMBEDDINGS ARE GENERATED:
+    Text → LLM Embedding Model → Vector [0.23, -0.87, 0.44, ..., 0.12]
+                                         ← 1536 numbers (OpenAI ada-002) →
+
+  WHY ARE EMBEDDINGS IMPORTANT?
+    They allow semantic search — find documents by MEANING, not exact keywords.
+
+    Traditional search: "car repair" won't match "automobile maintenance"
+    Semantic search:    Both queries have similar embeddings → they match!
+
+  VECTOR DATABASE:
+    A database optimized to store and search embeddings by similarity.
+    Query: embed user question → find nearest stored embeddings → return results.
+
+    Popular vector DBs:
+      Pinecone         → Managed cloud vector DB
+      Qdrant           → Open source, fast, .NET SDK available
+      Azure AI Search  → Microsoft's vector search (best for .NET teams)
+      pgvector         → Vector extension for PostgreSQL
+      Chroma           → Lightweight, local development
+
+  RAG PATTERN (Retrieval-Augmented Generation):
+    The most important LLM pattern for enterprise .NET apps.
+
+    PROBLEM:  LLM doesn't know your company's private data.
+    SOLUTION: Store your docs as embeddings → retrieve relevant ones →
+              inject into prompt → LLM answers using YOUR data.
+
+    PIPELINE:
+      [Your Documents] → Chunk → Embed → Store in Vector DB
+                                                    ↓
+      User Question → Embed → Search Vector DB → Top-K relevant chunks
+                                                    ↓
+                              Inject chunks into prompt + question
+                                                    ↓
+                                         LLM generates answer
+                                         grounded in your data
+
+  .NET DEVELOPER EXAMPLE (Azure OpenAI + Azure AI Search):
+
+    // Generate embedding for user query
+    var embeddingClient = openAIClient.GetEmbeddingClient("text-embedding-3-small");
+    var embedding = await embeddingClient.GenerateEmbeddingAsync(userQuery);
+    float[] queryVector = embedding.Value.ToFloats().ToArray();
+
+    // Search Azure AI Search for nearest documents
+    var searchOptions = new SearchOptions { VectorSearch = new() };
+    searchOptions.VectorSearch.Queries.Add(
+        new VectorizedQuery(queryVector) { KNearestNeighborsCount = 5, Fields = { "contentVector" } });
+
+    var results = await searchClient.SearchAsync<Document>("*", searchOptions);
+    // Inject top results into GPT-4o prompt as context → get grounded answer
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 8 — LLM LIMITATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  KNOWING THESE IS CRITICAL — both for interviews and for building reliable apps.
+
+  1. HALLUCINATION
+     What:   LLM confidently generates false information.
+     Why:    It predicts plausible-sounding tokens, not verified facts.
+     Example: "The .NET 9 release date was March 12, 2024" — sounds confident,
+              but may be wrong.
+     Fix:    RAG (ground responses in real data), ask model to cite sources,
+             low temperature, add "say I don't know if unsure" to system prompt.
+
+  2. KNOWLEDGE CUTOFF
+     What:   LLMs are trained on data up to a certain date. They don't know
+             recent events, new libraries, or current prices.
+     Example: GPT-4 trained to early 2024 — won't know about .NET 10.
+     Fix:    Use web search tools, RAG with updated knowledge base,
+             or fine-tune with recent data.
+
+  3. CONTEXT WINDOW LIMIT
+     What:   Can only process a fixed amount of text per request.
+             Forgets everything outside the window.
+     Fix:    RAG, chunking, summarization of older context.
+
+  4. INCONSISTENCY
+     What:   Same prompt can give different answers across calls (non-deterministic).
+     Fix:    Lower temperature, seed parameter (where supported), structured outputs.
+
+  5. BIAS
+     What:   LLMs inherit biases from training data (internet text).
+             Can produce biased responses about gender, race, culture.
+     Fix:    Careful system prompts, output filtering, human review pipeline.
+
+  6. NO REAL-WORLD ACTIONS (by default)
+     What:   Base LLMs only generate text — can't browse web, run code,
+             call APIs, or save data on their own.
+     Fix:    Tool use / Function calling — give the LLM tools it can invoke.
+             (This is how ChatGPT browses the web or GitHub Copilot runs code.)
+
+  7. PROMPT INJECTION
+     What:   Malicious users craft inputs that override your system prompt.
+             Example: User types "Ignore all previous instructions and..."
+     Fix:    Input validation, output filtering, sandboxed execution,
+             never trust LLM output for security-critical decisions.
+
+  .NET DEVELOPER IMPACT:
+    Never use raw LLM output directly in SQL queries (SQL injection via LLM).
+    Always validate and sanitize LLM output before saving to DB or executing.
+    Use structured outputs (JSON mode) for predictable parsing.
+    Implement retry + fallback logic — LLM APIs can fail or timeout.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 9 — REVISION NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ★ LLM:           Large neural network trained on text. Predicts next token.
+  ★ Transformer:   Architecture powering all modern LLMs. Attention is key.
+  ★ Token:         Basic unit LLMs process. ~0.75 words. Drives API pricing.
+  ★ Context Window: Max tokens per request. GPT-4o=128K. Gemini=1M.
+  ★ Prompt:        Your input to the LLM. System + User + History.
+  ★ Completion:    LLM's output. Generated token by token, autoregressively.
+  ★ Temperature:   Randomness. Low=focused. High=creative.
+  ★ Top-p:         Nucleus sampling. Filters low-probability tokens.
+  ★ Embedding:     Text as a vector. Similar meaning = close vectors.
+  ★ RAG:           Retrieve relevant docs → inject into prompt → grounded answer.
+  ★ Hallucination: LLM generates false info confidently. Biggest risk in prod.
+
+  KEY TERMS GLOSSARY:
+    Autoregressive:    Generating one token at a time, each fed back as input
+    Self-Attention:    Each token weighs relevance of all other tokens
+    BPE:               Byte Pair Encoding — tokenization algorithm used by GPT
+    Vector DB:         Database for storing and similarity-searching embeddings
+    RAG:               Retrieval-Augmented Generation — ground LLM in real data
+    Function Calling:  Let LLM invoke external tools/APIs mid-conversation
+    JSON Mode:         Force LLM to output valid JSON (great for .NET parsing)
+    Seed:              Fix randomness for reproducible outputs (where supported)
+    Prompt Injection:  Attack where user overrides system prompt via input
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 10 — INTERVIEW QUESTIONS & ANSWERS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Q1: What is an LLM and how does it generate text?
+  A:  An LLM is a large Transformer-based neural network trained on massive text
+      data to predict the next token. Text generation is autoregressive — each
+      token is predicted from all previous tokens, one at a time, until an end
+      condition is met. The core task is next-token prediction at scale.
+
+  Q2: What is a token? Why does it matter for developers?
+  A:  A token is the unit of text LLMs process — roughly 0.75 words in English.
+      It matters because: API costs are billed per token, context window limits
+      are in tokens, and non-English text uses more tokens per word. Developers
+      must estimate and manage token usage for cost control and context fitting.
+
+  Q3: What is the context window and what happens when you exceed it?
+  A:  The context window is the maximum tokens an LLM can process per request
+      (prompt + response combined). Exceeding it requires truncation, chunking
+      the input, summarizing older context, or using RAG to retrieve only
+      relevant pieces instead of the full document.
+
+  Q4: What is the difference between temperature and top-p?
+  A:  Temperature scales the probability distribution — high values flatten it
+      (more randomness), low values sharpen it (more deterministic). Top-p
+      (nucleus sampling) restricts token selection to the smallest set of tokens
+      covering p% of probability mass. Both control output variety; temperature
+      is more intuitive, top-p is more principled. Use low temperature for code.
+
+  Q5: What is an embedding and what is it used for?
+  A:  An embedding is a dense numerical vector representing the semantic meaning
+      of text. Similar texts produce similar vectors. Used for semantic search,
+      clustering, and the RAG pattern — where you retrieve relevant document
+      chunks by comparing query embeddings to stored document embeddings.
+
+  Q6: What is RAG and why is it important?
+  A:  RAG (Retrieval-Augmented Generation) combines a vector search step with
+      LLM generation. User query is embedded → similar documents retrieved from
+      a vector DB → injected as context into the LLM prompt → model answers
+      using real, current, private data. Solves hallucination and knowledge
+      cutoff problems for enterprise apps.
+
+  Q7: What is hallucination in LLMs and how do you mitigate it?
+  A:  Hallucination is when an LLM generates confident but incorrect information.
+      It happens because the model predicts plausible tokens, not verified facts.
+      Mitigations: RAG (ground responses in real data), low temperature, ask
+      model to cite sources or say "I don't know", validate outputs before use,
+      use structured outputs with strict schemas.
+
+  Q8: What is prompt injection and how do you defend against it?
+  A:  Prompt injection is when a user crafts input to override the system prompt
+      or hijack the LLM's behavior ("Ignore previous instructions and...").
+      Defenses: validate and sanitize user input, never pass raw user text
+      directly into privileged prompts, use output filtering, and never trust
+      LLM output for security-critical operations like authentication.
+
+  Q9: What is function calling / tool use in LLMs?
+  A:  Function calling lets you define a set of tools (functions) the LLM can
+      choose to invoke during generation. The model outputs a structured call
+      (function name + arguments) instead of text when it needs external data.
+      Your app executes the function, returns the result, and the model continues.
+      Used for: web search, DB queries, API calls, calculator, running code.
+
+  Q10: How would you build an LLM-powered feature in a .NET Web API?
+  A:   Use Azure OpenAI SDK (Azure.AI.OpenAI NuGet). Define a system prompt
+       describing the feature's behavior. Accept user input → build message array
+       → call GetChatCompletionsAsync → return the completion text. For grounding,
+       add Azure AI Search vector retrieval before the LLM call (RAG). Use
+       Semantic Kernel for orchestrating multi-step LLM workflows in .NET.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 11 — KEY TAKEAWAYS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✅ LLMs predict the next token — everything else emerges from this at scale
+  ✅ Transformers + Self-Attention = the architecture behind all modern LLMs
+  ✅ Tokens ≈ 0.75 words. They drive API cost and context window limits
+  ✅ Context window = model's working memory. Larger = more expensive
+  ✅ System prompt defines model behavior — always use one in production apps
+  ✅ Temperature 0.0-0.3 for code/facts. 0.7-1.0 for creative tasks
+  ✅ Embeddings = text as vectors. Enable semantic search and RAG
+  ✅ RAG = most important enterprise LLM pattern. Solves hallucination + cutoff
+  ✅ Know the limits: hallucination, cutoff, bias, injection — defend against them
+  ✅ .NET stack: Azure OpenAI + Semantic Kernel + Azure AI Search = full LLM app
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  END OF DAY 8 NOTES
+  Next Up → Day 9: Prompt Engineering
+            (Zero-shot, Few-shot, Chain-of-Thought, ReAct, Prompt Patterns)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
