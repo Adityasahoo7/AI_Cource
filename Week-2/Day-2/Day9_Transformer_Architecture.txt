@@ -1,0 +1,555 @@
+
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║              AI COURSE — DAY 9: TRANSFORMER ARCHITECTURE                       ║
+║              Attention | Encoder | Decoder | Multi-Head | Positional Encoding  ║
+║              Author: [Your Name]  |  Date: 2026-06-11                           ║
+║              Perspective: .NET Developer  |  Ready for GitHub Commit            ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 1 — ORIGIN & WHY TRANSFORMERS EXIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  BEFORE TRANSFORMERS — THE PROBLEM:
+    Before 2017, NLP used RNNs (Recurrent Neural Networks) and LSTMs.
+    These processed text SEQUENTIALLY — one word at a time, left to right.
+
+    PROBLEMS WITH RNNs:
+      ✗ Slow to train — no parallelism (must wait for word N before word N+1)
+      ✗ Vanishing gradient — early words "forgotten" in long sentences
+      ✗ Long-range dependencies fail — "The cat that sat on the large fluffy
+        mat near the window was tired." → by "was tired", cat is forgotten.
+
+  THE BREAKTHROUGH:
+    June 2017 — Google Brain published:
+    "Attention Is All You Need" — Vaswani et al.
+
+    Key claim: You don't need recurrence at all.
+    Replace sequential RNNs entirely with ATTENTION MECHANISM.
+    Process all tokens in PARALLEL. Handle any-distance dependencies equally.
+
+    Result: Faster training. Better performance. Scales to billions of params.
+    This paper is the foundation of GPT, BERT, Claude, Gemini — everything modern.
+
+  .NET ANALOGY:
+    RNN = Old synchronous ASP.NET (one request at a time, blocking)
+    Transformer = Modern async ASP.NET Core (all requests processed in parallel)
+    The performance and scalability jump is comparable.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 2 — THE BIG PICTURE: TRANSFORMER STRUCTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  The original Transformer (2017) was designed for translation tasks.
+  It has two main blocks:
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │                     TRANSFORMER                                      │
+  │                                                                      │
+  │   ┌─────────────────────┐     ┌──────────────────────────────────┐  │
+  │   │      ENCODER        │     │           DECODER                │  │
+  │   │                     │     │                                  │  │
+  │   │  Reads & understands│────▶│  Generates output token by token │  │
+  │   │  the input text     │     │  using encoder context           │  │
+  │   │                     │     │                                  │  │
+  │   │  (stacked N times)  │     │  (stacked N times)               │  │
+  │   └─────────────────────┘     └──────────────────────────────────┘  │
+  │                                                                      │
+  │   Input: "Hello, how are you?"  →  Output: "Hola, ¿cómo estás?"    │
+  └──────────────────────────────────────────────────────────────────────┘
+
+  THREE ARCHITECTURAL VARIANTS BUILT FROM THIS:
+
+    Encoder-only:      BERT, RoBERTa
+                       Use: Text classification, NER, embeddings
+                       Reads entire input, builds rich representation.
+
+    Decoder-only:      GPT-2, GPT-3, GPT-4, Claude, LLaMA
+                       Use: Text generation, chatbots, code completion
+                       Generates text autoregressively (token by token).
+
+    Encoder-Decoder:   Original Transformer, T5, BART, Whisper
+                       Use: Translation, summarization, speech-to-text
+                       Encodes source → Decodes to target.
+
+  ┌────────────────┬──────────────────┬──────────────────────────────────┐
+  │ Type           │ Models           │ Best For                         │
+  ├────────────────┼──────────────────┼──────────────────────────────────┤
+  │ Encoder-only   │ BERT, RoBERTa    │ Understanding, classification    │
+  │ Decoder-only   │ GPT-4, Claude    │ Generation, chat, code           │
+  │ Encoder-Decoder│ T5, BART, Whisper│ Translation, summarization, STT  │
+  └────────────────┴──────────────────┴──────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 3 — INPUT PROCESSING: TOKENIZATION & EMBEDDINGS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Before entering the Transformer layers, text is converted to numbers.
+
+  STEP 1 — TOKENIZATION:
+    Raw text → discrete token IDs (integers)
+    "I love coding"  →  [40, 1842, 19617]
+
+  STEP 2 — TOKEN EMBEDDINGS:
+    Each token ID → dense vector of real numbers (e.g., 512 or 768 dimensions)
+    This vector encodes the token's MEANING.
+
+    "King"  →  [0.23, -0.87, 0.44, 0.12, ...]   (512 numbers)
+    "Queen" →  [0.21, -0.85, 0.46, 0.10, ...]   (close to King in vector space)
+
+    These embeddings are LEARNED during training.
+
+  STEP 3 — POSITIONAL ENCODING:
+    CRITICAL PROBLEM:
+      Transformers process all tokens in PARALLEL.
+      Unlike RNNs, they have NO built-in sense of word ORDER.
+      "Dog bites man" ≠ "Man bites dog" — but without position info,
+      the model sees the same three token vectors either way!
+
+    SOLUTION — POSITIONAL ENCODING:
+      Add a unique position vector to each token embedding.
+      Position vector encodes WHERE in the sequence each token is.
+
+      Final Input Vector = Token Embedding + Positional Encoding
+
+      "I"    at position 0 → token_embed("I")    + pos_encode(0)
+      "love" at position 1 → token_embed("love") + pos_encode(1)
+      "coding" at position 2 → token_embed("coding") + pos_encode(2)
+
+    TYPES OF POSITIONAL ENCODING:
+      Sinusoidal (original paper): Fixed mathematical formula using sin/cos waves.
+                                   No learning needed. Generalizes to long sequences.
+      Learned Positional Encoding: Trainable vectors per position (used by BERT, GPT).
+      RoPE (Rotary Position Embedding): Used by LLaMA, GPT-NeoX. Better for long context.
+      ALiBi: Used by some models. Better extrapolation beyond training length.
+
+  FULL INPUT PIPELINE:
+    Text → Tokenizer → Token IDs → Embedding Layer → + Positional Encoding
+                                                             ↓
+                                                   Input to Transformer Layers
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 4 — ATTENTION MECHANISM (THE CORE INNOVATION)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  INTUITION:
+    For every token in the input, attention asks:
+    "To understand MY meaning in this context, how much should I
+     pay attention to EVERY OTHER token?"
+
+    It computes a relevance score between every pair of tokens —
+    then uses those scores to build a context-aware representation.
+
+  REAL EXAMPLE:
+    Sentence: "The animal didn't cross the street because it was too tired."
+
+    What does "it" refer to? → "animal" (not street)
+
+    Attention score of "it" attending to "animal" = HIGH
+    Attention score of "it" attending to "street" = LOW
+    Result: "it" gets a context vector heavily influenced by "animal" → correct!
+
+  QUERY, KEY, VALUE (Q, K, V) — THE MATH:
+    Each token produces THREE vectors, learned via separate weight matrices:
+
+    Q (Query):  "What am I looking for?"
+    K (Key):    "What do I contain / offer?"
+    V (Value):  "What information do I carry if attended to?"
+
+    ATTENTION FORMULA:
+    Attention(Q, K, V) = softmax( Q × Kᵀ / √d_k ) × V
+
+    STEP BY STEP:
+      1. Q × Kᵀ          → Raw attention scores (dot product of every Q with every K)
+                            High score = high relevance between token pair
+      2. ÷ √d_k           → Scale down scores (√d_k = square root of key dimension)
+                            Prevents scores from getting too large → softmax stability
+      3. softmax(...)     → Convert scores to probabilities (all sum to 1.0)
+                            These are the "attention weights"
+      4. × V              → Weighted sum of Value vectors
+                            Each token gets a new vector = blend of all Values,
+                            weighted by how much it attended to each other token
+
+    RESULT:
+      Each token's output = a context-aware vector encoding
+      not just its own meaning, but its RELATIONSHIP to all other tokens.
+
+  .NET ANALOGY:
+    Query  = a search query (what you're looking for in a database)
+    Key    = a database index (what each record is about)
+    Value  = the actual record data (what you get back)
+    Attention = run a weighted similarity search, return blended results.
+
+  SELF-ATTENTION vs CROSS-ATTENTION:
+    Self-Attention:   Tokens attend to other tokens IN THE SAME sequence.
+                      Used in Encoder and Decoder layers.
+                      "How does each word relate to all other words in my input?"
+
+    Cross-Attention:  Decoder tokens attend to ENCODER output tokens.
+                      Used to connect encoder context to decoder generation.
+                      "As I generate the translation, which source words matter?"
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 5 — MULTI-HEAD ATTENTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  DEFINITION:
+    Instead of running attention once, run it H times in PARALLEL
+    with different learned Q/K/V weight matrices ("heads").
+    Each head learns to attend to DIFFERENT types of relationships.
+
+  WHY MULTIPLE HEADS?
+    One attention head might focus on:   syntactic relationships (subject-verb)
+    Another head might focus on:         coreference (pronoun → noun)
+    Another head might focus on:         semantic similarity (synonyms)
+    Another head might focus on:         positional proximity (nearby words)
+
+    Using H heads = model captures H different relationship types simultaneously.
+
+  HOW IT WORKS:
+    Input vectors (d_model dimensions) split into H heads.
+    Each head gets d_model/H dimensions → runs its own attention.
+    H head outputs concatenated → projected back to d_model dimensions.
+
+  VISUAL:
+    Input ──┬─→ Head 1 (Q1,K1,V1) → Attention Output 1 ─┐
+            ├─→ Head 2 (Q2,K2,V2) → Attention Output 2 ─┤
+            ├─→ Head 3 (Q3,K3,V3) → Attention Output 3 ─┼─→ Concat → Linear → Output
+            ├─→ ...                                       ─┤
+            └─→ Head H (QH,KH,VH) → Attention Output H ─┘
+
+  TYPICAL HEAD COUNTS:
+    BERT-base:   12 heads, 768 d_model  →  64 dims per head
+    GPT-3:       96 heads, 12288 d_model → 128 dims per head
+    More heads = richer relationship modeling
+
+  .NET ANALOGY:
+    Multi-head attention is like running the same LINQ query in parallel
+    with different filter/projection combinations, then merging all results.
+    Each "head" finds a different pattern in the same data.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 6 — ENCODER BLOCK (DEEP DIVE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  PURPOSE:
+    The Encoder reads the entire input and builds a rich contextual
+    representation of it. Each token's output vector encodes its meaning
+    IN CONTEXT of the full input sequence.
+
+  ENCODER BLOCK STRUCTURE (repeated N times, typically 6–24):
+
+    Input Embeddings + Positional Encoding
+               ↓
+    ┌─────────────────────────────────────┐
+    │  1. MULTI-HEAD SELF-ATTENTION       │
+    │     Each token attends to all others│
+    │              ↓                      │
+    │  2. ADD & NORM (Residual Connection)│
+    │     output = LayerNorm(x + Attention│
+    │              ↓                      │
+    │  3. FEED-FORWARD NETWORK (FFN)      │
+    │     Two linear layers + ReLU/GELU   │
+    │     Applied independently per token │
+    │              ↓                      │
+    │  4. ADD & NORM (Residual Connection)│
+    │     output = LayerNorm(x + FFN(x))  │
+    └─────────────────────────────────────┘
+               ↓
+    (Repeat for N layers)
+               ↓
+    Encoder Output: rich contextual vectors for each input token
+
+  KEY COMPONENTS EXPLAINED:
+
+    FEED-FORWARD NETWORK (FFN):
+      A two-layer MLP applied to EACH token independently:
+      FFN(x) = ReLU(x × W1 + b1) × W2 + b2
+      Typically expands dimensionality then contracts:
+      d_model(512) → d_ff(2048) → d_model(512)
+      This is where most of the model's "knowledge" is stored.
+
+    RESIDUAL CONNECTIONS (Add):
+      Output = LayerNorm(x + Sublayer(x))
+      The original input x is ADDED to the sublayer's output.
+      WHY: Prevents vanishing gradients in deep networks.
+           Allows gradients to flow directly back through skip connections.
+           Lets the network learn CORRECTIONS rather than complete transformations.
+
+    LAYER NORMALIZATION (Norm):
+      Normalizes activations across the feature dimension per token.
+      Stabilizes training. Applied AFTER each residual addition.
+
+  ENCODER OUTPUT:
+    For a sentence of N tokens, the encoder produces N vectors.
+    Each vector = that token's meaning in full context of the sentence.
+    These vectors are passed to the Decoder (in Encoder-Decoder models)
+    or used directly for classification/embedding tasks.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 7 — DECODER BLOCK (DEEP DIVE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  PURPOSE:
+    The Decoder generates output tokens one at a time.
+    At each step it uses: (a) all previously generated tokens, and
+    (b) the encoder's contextual representation of the input.
+
+  DECODER BLOCK STRUCTURE (repeated N times):
+
+    Output Embeddings (so far) + Positional Encoding
+               ↓
+    ┌──────────────────────────────────────────┐
+    │  1. MASKED MULTI-HEAD SELF-ATTENTION     │
+    │     Attends to all PREVIOUS output tokens│
+    │     Future tokens are MASKED (hidden)    │
+    │              ↓                           │
+    │  2. ADD & NORM                           │
+    │              ↓                           │
+    │  3. CROSS-ATTENTION                      │
+    │     Queries = decoder state              │
+    │     Keys & Values = ENCODER OUTPUT       │
+    │     "Which input tokens matter now?"     │
+    │              ↓                           │
+    │  4. ADD & NORM                           │
+    │              ↓                           │
+    │  5. FEED-FORWARD NETWORK                 │
+    │              ↓                           │
+    │  6. ADD & NORM                           │
+    └──────────────────────────────────────────┘
+               ↓
+    Linear Layer + Softmax
+               ↓
+    Probability distribution over vocabulary
+               ↓
+    Select next token → append → repeat
+
+  MASKED SELF-ATTENTION (Causal Masking):
+    The decoder can only attend to PAST and CURRENT tokens.
+    Future tokens are masked out (set to -infinity before softmax).
+
+    WHY: At generation time, future tokens don't exist yet.
+         During training, we mask them to simulate this reality.
+         This is what makes models "autoregressive" — left to right only.
+
+    MASK MATRIX EXAMPLE (4 tokens):
+      Token:    t1    t2    t3    t4
+      t1 can see: [✓   ✗    ✗    ✗ ]
+      t2 can see: [✓   ✓    ✗    ✗ ]
+      t3 can see: [✓   ✓    ✓    ✗ ]
+      t4 can see: [✓   ✓    ✓    ✓ ]
+
+  ENCODER-ONLY vs DECODER-ONLY (For LLMs today):
+    GPT/Claude/LLaMA are DECODER-ONLY.
+    They dropped the encoder entirely.
+    The decoder alone handles all tasks via prompt + generation.
+    Simpler, scales better, and sufficient for general-purpose language models.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 8 — FULL TRANSFORMER ARCHITECTURE DIAGRAM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        INPUT TEXT                    TARGET TEXT (during training)
+             ↓                                  ↓
+       Tokenization                       Tokenization
+             ↓                                  ↓
+    Token Embeddings                   Token Embeddings
+             ↓                                  ↓
+   Positional Encoding               Positional Encoding
+             ↓                                  ↓
+    ┌─────────────────┐             ┌──────────────────────┐
+    │   ENCODER x N   │             │    DECODER x N       │
+    │                 │             │                      │
+    │ Multi-Head      │             │ Masked Multi-Head    │
+    │ Self-Attention  │             │ Self-Attention       │
+    │       ↓         │             │        ↓             │
+    │ Add & Norm      │             │ Add & Norm           │
+    │       ↓         │─────────────│        ↓             │
+    │ Feed Forward    │  Context    │ Cross-Attention      │
+    │       ↓         │  Vectors    │  (Q=Decoder,         │
+    │ Add & Norm      │             │   K,V=Encoder)       │
+    └─────────────────┘             │        ↓             │
+                                    │ Add & Norm           │
+                                    │        ↓             │
+                                    │ Feed Forward         │
+                                    │        ↓             │
+                                    │ Add & Norm           │
+                                    └──────────────────────┘
+                                              ↓
+                                       Linear Layer
+                                              ↓
+                                    Softmax over Vocabulary
+                                              ↓
+                                    Output Token Probabilities
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 9 — KEY NUMBERS & SCALING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ORIGINAL TRANSFORMER (2017):
+    Encoder layers: 6      Decoder layers: 6
+    d_model: 512           Attention heads: 8
+    d_ff: 2048             Parameters: ~65 million
+
+  BERT-BASE (2018) — Encoder-only:
+    Layers: 12    Heads: 12    d_model: 768    Params: 110M
+
+  GPT-2 (2019) — Decoder-only:
+    Layers: 48    Heads: 25    d_model: 1600   Params: 1.5B
+
+  GPT-3 (2020) — Decoder-only:
+    Layers: 96    Heads: 96    d_model: 12288  Params: 175B
+
+  SCALING LAW (Kaplan et al., OpenAI 2020):
+    Model performance improves predictably with:
+    More parameters + More data + More compute
+    "Bigger is reliably better" — drove the race to trillion-parameter models.
+
+  ATTENTION COMPLEXITY:
+    Self-attention is O(n²) in sequence length n.
+    For n=1000 tokens: 1,000,000 attention score computations per layer.
+    For n=10,000 tokens: 100,000,000 — very expensive.
+    This is WHY large context windows are costly.
+    Research into linear attention (O(n)) is ongoing.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 10 — REVISION NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ★ TRANSFORMER:      Replaces RNNs. Processes all tokens in PARALLEL via Attention.
+  ★ ATTENTION:        Each token computes relevance scores against all others.
+                      Formula: softmax(Q×Kᵀ / √d_k) × V
+  ★ Q / K / V:        Query=what I seek, Key=what I offer, Value=what I carry.
+  ★ MULTI-HEAD:       Run attention H times in parallel, each learning different patterns.
+  ★ POSITIONAL ENC:   Adds position information since Transformer has no order by default.
+  ★ RESIDUAL CONN:    x + Sublayer(x). Prevents vanishing gradients. Enables deep stacking.
+  ★ LAYER NORM:       Stabilizes training after each sublayer.
+  ★ ENCODER:          Reads full input → contextual representation per token.
+  ★ DECODER:          Generates output autoregressively using masked attention + cross-attention.
+  ★ MASKED ATTENTION: Decoder can only attend to past tokens. Future is masked.
+  ★ CROSS-ATTENTION:  Decoder queries encoder output to connect input context to generation.
+  ★ FFN:              Per-token two-layer MLP. Stores model's factual knowledge.
+
+  ARCHITECTURE TYPES QUICK REF:
+    BERT  = Encoder-only  = Understanding tasks (classify, embed, NER)
+    GPT   = Decoder-only  = Generation tasks (chat, code, completion)
+    T5    = Enc+Dec        = Seq2seq tasks (translate, summarize)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 11 — INTERVIEW QUESTIONS & ANSWERS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Q1: What problem did Transformers solve that RNNs couldn't?
+  A:  RNNs processed tokens sequentially — slow, no parallelism, and they suffered
+      from vanishing gradients, causing them to forget early tokens in long sequences.
+      Transformers process all tokens simultaneously using attention, handle any-distance
+      dependencies equally well, and scale to billions of parameters efficiently.
+
+  Q2: What is the attention mechanism and why is it the core of Transformers?
+  A:  Attention computes a weighted relationship between every pair of tokens.
+      Each token generates Q, K, V vectors. Scores = Q×Kᵀ/√d_k, converted to
+      probabilities via softmax, then multiplied by V to produce context-aware
+      representations. It lets every token dynamically focus on relevant parts of
+      the input regardless of distance — unlike fixed-window approaches.
+
+  Q3: What are Q, K, and V in attention?
+  A:  Query (Q): what the current token is looking for in others.
+      Key (K): what each token offers / represents as a search target.
+      Value (V): the actual information a token contributes if attended to.
+      The formula selects relevant Values by matching Queries against Keys.
+
+  Q4: Why do we scale by √d_k in the attention formula?
+  A:  As the dimension d_k grows large, the dot products Q×Kᵀ grow large in
+      magnitude, pushing softmax into regions with extremely small gradients
+      (saturation). Dividing by √d_k keeps the scores in a moderate range
+      where softmax gradients are healthy and training is stable.
+
+  Q5: What is multi-head attention and what advantage does it give?
+  A:  Instead of a single attention operation, multi-head runs H independent
+      attention computations in parallel with different learned weight matrices.
+      Each head captures a different type of relationship (syntactic, semantic,
+      coreference, positional). Their outputs are concatenated and projected.
+      This gives the model a richer, multi-perspective understanding of context.
+
+  Q6: Why is positional encoding needed in Transformers?
+  A:  Transformers process all tokens in parallel with no inherent sense of order.
+      "Dog bites man" and "Man bites dog" would be identical without position info.
+      Positional encoding adds a unique position-dependent vector to each token
+      embedding, giving the model information about each token's location in sequence.
+
+  Q7: What is a residual connection and why does every Transformer block use it?
+  A:  A residual connection adds the block's input directly to its output:
+      output = LayerNorm(x + Sublayer(x)). This creates a "skip" path for gradients
+      to flow backwards without passing through the sublayer, preventing vanishing
+      gradients in deep networks (GPT-3 has 96 layers). It also means each sublayer
+      only needs to learn a CORRECTION to the input rather than a full transformation.
+
+  Q8: What is the difference between self-attention and cross-attention?
+  A:  Self-attention: Q, K, V all come from the SAME sequence. Tokens attend to
+      other tokens within the same input (used in encoder and masked decoder layers).
+      Cross-attention: Q comes from the DECODER, while K and V come from the
+      ENCODER output. This is how the decoder "reads" the source input while
+      generating each output token.
+
+  Q9: What is masked self-attention in the decoder and why is it needed?
+  A:  During generation, the decoder produces tokens left-to-right. Each token can
+      only attend to previous tokens — future tokens don't exist yet. Masking sets
+      future attention scores to -infinity before softmax, making them zero weight.
+      During training, masking enforces this constraint even though all target tokens
+      are present, ensuring the model learns to predict without "cheating".
+
+  Q10: What is the difference between encoder-only, decoder-only, and encoder-decoder?
+  A:  Encoder-only (BERT): Reads full input bidirectionally. Best for understanding
+      tasks — classification, embeddings, NER. Cannot generate open-ended text.
+      Decoder-only (GPT, Claude): Autoregressive generation only. Sees past tokens.
+      One model handles all tasks via prompting. Most LLMs today use this.
+      Encoder-Decoder (T5, Whisper): Encoder reads source fully; decoder generates
+      target. Best for mapping one sequence to another — translation, summarization.
+
+  Q11: Why is attention O(n²) and why does that matter?
+  A:  Attention computes a score for every pair of tokens — n tokens × n tokens =
+      n² operations per layer. For 1K tokens = 1M scores. For 128K tokens = 16 billion
+      scores per layer. This is why large context windows are expensive and slow.
+      It also means compute cost grows quadratically as context length increases.
+
+  Q12: What is the Feed-Forward Network inside each Transformer block?
+  A:  A two-layer MLP applied independently to each token's representation:
+      FFN(x) = ReLU(xW1 + b1)W2 + b2. It typically expands dimensions by 4×
+      then contracts back. While attention mixes information ACROSS tokens,
+      the FFN processes each token's representation independently. Research
+      suggests the FFN layers store most of the model's factual knowledge.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SECTION 12 — KEY TAKEAWAYS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✅ "Attention Is All You Need" (2017) replaced RNNs — enabled the LLM era
+  ✅ Transformers process tokens in PARALLEL — fast, scalable, parallelizable
+  ✅ Self-Attention = every token weighs its relevance to every other token
+  ✅ Q×Kᵀ/√d_k formula → softmax → weighted sum of V = attention output
+  ✅ Multi-head attention runs H parallel attentions — captures diverse patterns
+  ✅ Positional encoding gives the model token order awareness
+  ✅ Residual connections + Layer Norm enable training of very deep networks
+  ✅ Encoder = understanding | Decoder = generation | Both = seq2seq
+  ✅ Causal masking in decoder = can only see past tokens during generation
+  ✅ GPT / Claude / LLaMA = decoder-only Transformers — the dominant LLM design
+  ✅ Attention is O(n²) — root reason large context windows are expensive
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  END OF DAY 9 NOTES
+  Next Up → Day 10: Prompt Engineering
+            (Zero-shot, Few-shot, Chain-of-Thought, ReAct, Prompt Patterns)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
